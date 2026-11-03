@@ -1,0 +1,12 @@
+[book]
+title = "Ojuny Manual"
+authors = ["Ojuny contributors"]
+language = "en"
+src = "src"
+build-dir = "book"
+
+[build]
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/ojuny-project/ojuny-manual"

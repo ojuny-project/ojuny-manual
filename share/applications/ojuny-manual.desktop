@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Ojuny Manual
+Comment=Read the Ojuny user manual offline
+Exec=ojuny-manual --gui
+Icon=ojuny-manual
+Terminal=false
+Categories=Documentation;
+Keywords=ojuny;manual;documentation;

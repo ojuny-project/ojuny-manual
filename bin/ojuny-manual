@@ -1,0 +1,103 @@
+#!/usr/bin/env sh
+set -eu
+
+home=${OJUNY_MANUAL_HOME:-}
+if [ -z "$home" ]; then
+  script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+  if [ -d "$script_dir/../share/ojuny-manual/book" ]; then
+    home=$(CDPATH= cd -- "$script_dir/../share/ojuny-manual" && pwd)
+  elif [ -d "$script_dir/../book" ]; then
+    home=$(CDPATH= cd -- "$script_dir/.." && pwd)
+  else
+    home=$script_dir/../share/ojuny-manual
+  fi
+fi
+
+book=$home/book
+index=$book/index.html
+if [ -f "$home/SUMMARY.md" ]; then
+  summary=$home/SUMMARY.md
+else
+  summary=$home/src/SUMMARY.md
+fi
+
+die() {
+  printf 'ojuny-manual: %s\n' "$1" >&2
+  exit 1
+}
+
+[ -f "$index" ] || die "book not found at $index"
+
+usage() {
+  cat <<'EOF'
+usage: ojuny-manual [--gui | --path | --list | --serve]
+
+  (no option)  open the book in w3m, or in a browser with a display
+  --gui        open the book in a browser
+  --path       print the path to the installed index page
+  --list       print the chapter titles, one per line
+  --serve      serve the book on 127.0.0.1 and print the URL
+EOF
+}
+
+open_gui() {
+  url=file://$index
+  if command -v xdg-open >/dev/null 2>&1 && xdg-open "$url" >/dev/null 2>&1; then
+    return 0
+  fi
+  if [ -n "${BROWSER:-}" ] && $BROWSER "$url" >/dev/null 2>&1; then
+    return 0
+  fi
+  printf '%s\n' "$index"
+}
+
+open_tty() {
+  if command -v w3m >/dev/null 2>&1; then
+    exec w3m "$index"
+  fi
+  printf '%s\n' "$index"
+}
+
+list_chapters() {
+  [ -f "$summary" ] || die "chapter list not found at $summary"
+  while IFS= read -r line; do
+    case "$line" in
+      '- ['* | '* ['*)
+        title=${line#*[}
+        printf '%s\n' "${title%%]*}"
+        ;;
+    esac
+  done <"$summary"
+}
+
+serve() {
+  command -v python3 >/dev/null 2>&1 || die 'python3 is required for --serve'
+  # Bind once so the kernel picks a free port, then serve on it.
+  port=$(python3 -c 'import socket
+s = socket.socket()
+s.bind(("127.0.0.1", 0))
+print(s.getsockname()[1])
+s.close()')
+  printf 'http://127.0.0.1:%s/\n' "$port"
+  cd "$book"
+  exec python3 -m http.server --bind 127.0.0.1 "$port"
+}
+
+case "${1:-}" in
+  '')
+    if [ -t 1 ] && [ -z "${DISPLAY:-}" ] && [ -z "${WAYLAND_DISPLAY:-}" ]; then
+      open_tty
+    else
+      open_gui
+    fi
+    ;;
+  --gui) open_gui ;;
+  --path) printf '%s\n' "$index" ;;
+  --list) list_chapters ;;
+  --serve) serve ;;
+  -h | --help) usage ;;
+  *)
+    usage >&2
+    exit 2
+    ;;
+esac
