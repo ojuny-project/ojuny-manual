@@ -4,8 +4,9 @@
 > **Unreleased.** Ojuny is not released. This chapter is unreviewed, may contain placeholders, and is subject to change without notice.
 
 
-> Status: untested. Applies to commit `83536b7`, 2026-11-03. The package and the
-> launcher have not been built or run.
+> Status: untested. Applies to commit `83536b7`, 2026-11-03. The package builds
+> and its checks pass; the TTY reader and desktop entry have not been run in a
+> session.
 
 The manual installs as a Nix package that contains the built book, a launcher,
 a desktop entry, an icon, and a bundled `w3m`. It needs no Ojuny desktop, no

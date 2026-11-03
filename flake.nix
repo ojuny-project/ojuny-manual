@@ -65,6 +65,8 @@
                   pkgs.xdg-utils
                 ]
               }
+
+            patchShebangs $out/bin
           '';
 
       mkCheck =

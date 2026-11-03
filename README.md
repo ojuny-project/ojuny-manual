@@ -8,8 +8,9 @@ One Markdown source tree feeds three outputs: GitHub renders the pages, mdBook
 builds a static site, and the same build ships as an offline Nix package with a
 launcher, a desktop entry, an icon, and a bundled `w3m`.
 
-**Build and package status: unverified.** The flake, the launcher, and the
-package have not been built or run.
+**Build and package status: verified on x86_64-linux, 2026-11-03.** `nix build`,
+`nix flake check`, `--list`, and `--path` pass. The TTY reader and the desktop
+entry have not been exercised in a real session.
 
 ## Read online
 

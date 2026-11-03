@@ -1,0 +1,40 @@
+name: docs
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Link check (offline)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress README.md src
+
+      - name: Placeholder scan
+        run: |
+          if grep -rInE 'TODO|FIXME|TBD|XXX|PLACEHOLDER|Lorem ipsum' \
+            --include='*.md' \
+            --exclude-dir=notes \
+            .; then
+            echo "Placeholder strings remain." >&2
+            exit 1
+          fi
+
+      - name: SUMMARY links resolve
+        run: |
+          missing=0
+          while IFS= read -r target; do
+            if [ ! -f "src/$target" ]; then
+              echo "missing page: src/$target" >&2
+              missing=1
+            fi
+          done < <(grep -oE '\]\([^)]+\)' src/SUMMARY.md | sed -E 's/^\]\(//; s/\)$//' | sed -E 's/#.*$//' | grep -vE '^(https?:|mailto:)')
+          exit "$missing"

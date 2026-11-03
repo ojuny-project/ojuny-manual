@@ -3,9 +3,9 @@ title = "Ojuny Manual"
 authors = ["Ojuny contributors"]
 language = "en"
 src = "src"
-build-dir = "book"
 
 [build]
+build-dir = "book"
 create-missing = false
 
 [output.html]
