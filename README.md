@@ -64,6 +64,23 @@ mdbook build
 
 The output lands in `book/`, which is ignored by Git.
 
+## Releases
+
+A `v*` tag, a manual workflow run, or a commit on `main` whose title starts with
+a version such as `v0.1.0` builds `ojuny-manual-x86_64` and
+`ojuny-manual-flake.tar.gz`.
+
+The release flake installs the prebuilt book and launcher without compiling:
+
+```nix
+inputs.ojuny-manual.url =
+  "tarball+https://github.com/ojuny-project/ojuny-manual/releases/download/vX.Y.Z/ojuny-manual-flake.tar.gz";
+```
+
+Add `inputs.ojuny-manual.packages.${pkgs.system}.ojuny-manual` to
+`environment.systemPackages`.
+
+
 ## License
 
 GPL-3.0. See [LICENSE](LICENSE).

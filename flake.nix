@@ -37,6 +37,8 @@
         in
         pkgs.runCommand "ojuny-manual-0.1.0"
           {
+            pname = "ojuny-manual";
+            version = "0.1.0";
             nativeBuildInputs = [ pkgs.makeWrapper ];
             meta = {
               description = "Ojuny manual with an offline launcher and desktop entry";
