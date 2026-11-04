@@ -2,52 +2,86 @@ name: release
 
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
     inputs:
       tag:
         description: Release tag to create, for example v0.1.0
         required: true
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  bundle:
-    runs-on: ubuntu-latest
+  prepare:
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Resolve release tag
+        id: tag
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          tag=""
+          if [ "$REF_TYPE" = "tag" ]; then
+            tag="$REF_NAME"
+          elif [ -n "$INPUT_TAG" ]; then
+            tag="$INPUT_TAG"
+          else
+            tag=$(printf '%s\n' "$COMMIT_MESSAGE" | head -n1 | grep -oE '^v[0-9][0-9A-Za-z._-]*' || true)
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+  release:
+    needs: prepare
+    if: needs.prepare.outputs.tag != ''
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Build self-extracting bundle
+      # nix bundle includes the full closure, so the asset runs on a plain
+      # system without a binary cache or a local nix store.
+      - name: Build bundled binary
         run: |
           mkdir -p dist
-          nix bundle .#default -o dist/ojuny-manual
+          nix bundle .#packages.x86_64-linux.default -o dist/ojuny-manual
           cp -L dist/ojuny-manual "dist/ojuny-manual-$(uname -m)"
-          rm -f dist/ojuny-manual
-          sha256sum dist/ojuny-manual-* > dist/SHA256SUMS
-          mv dist/SHA256SUMS SHA256SUMS
+          rm dist/ojuny-manual
+
+      - name: Generate checksums
+        run: |
+          cd dist
+          sha256sum ojuny-manual-* > SHA256SUMS
 
       # The release also publishes a small flake. Add it as an input and use
-      # packages.<system>.ojuny-manual. The fetchurl hash pins the downloaded
-      # bundle, so the package is reproducible without a cache.
+      # packages.<system>.ojuny-manual to fetch and install the bundle without
+      # building it. The fetchurl hash pins the asset.
       - name: Generate release flake
         env:
-          TAG: ${{ inputs.tag || github.ref_name }}
+          TAG: ${{ needs.prepare.outputs.tag }}
         run: |
           sha=$(sha256sum "dist/ojuny-manual-$(uname -m)" | cut -d' ' -f1)
           base="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}"
           mkdir -p dist/flake
+          cp "$GITHUB_WORKSPACE/share/applications/ojuny-manual.desktop" dist/flake/
+          cp "$GITHUB_WORKSPACE/share/icons/hicolor/scalable/apps/ojuny-manual.svg" dist/flake/
           cat > dist/flake/flake.nix <<EOF
           {
             inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -67,7 +101,12 @@ jobs:
                     sha256 = "${sha}";
                   };
                   dontUnpack = true;
-                  installPhase = "install -Dm755 \$src \$out/bin/ojuny-manual";
+                  dontFixup = true;
+                  installPhase = ''
+                    install -Dm755 \$src \$out/bin/ojuny-manual
+                    install -Dm644 \${./share/applications/ojuny-manual.desktop} \$out/share/applications/ojuny-manual.desktop
+                    install -Dm644 \${./share/icons/hicolor/scalable/apps/ojuny-manual.svg} \$out/share/icons/hicolor/scalable/apps/ojuny-manual.svg
+                  '';
                 };
               in {
                 packages = forAllSystems (pkgs: system: {
@@ -77,12 +116,15 @@ jobs:
               };
           }
           EOF
-          tar -czf dist/ojuny-manual-flake.tar.gz -C dist/flake flake.nix
+          tar -czf dist/ojuny-manual-flake.tar.gz -C dist/flake .
 
-      - uses: softprops/action-gh-release@v2
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag || github.ref_name }}
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           files: |
-            dist/ojuny-manual-*
-            SHA256SUMS
+            dist/ojuny-manual-x86_64
+            dist/ojuny-manual-flake.tar.gz
+            dist/SHA256SUMS
           fail_on_unmatched_files: true
