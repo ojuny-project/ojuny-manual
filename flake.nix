@@ -13,6 +13,37 @@
 
       forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
 
+      binaryInfo =
+        if builtins.pathExists ./binary-url.json
+        then builtins.fromJSON (builtins.readFile ./binary-url.json)
+        else null;
+
+      mkBinary = {
+        system,
+        tag ? (if binaryInfo == null then throw "ojuny-manual: binary-url.json is missing" else binaryInfo.latest),
+        package ? "ojuny-manual",
+      }: let
+        release =
+          if binaryInfo == null
+          then throw "ojuny-manual: binary-url.json is missing"
+          else binaryInfo.releases.${tag} or (throw "ojuny-manual: release '${tag}' is not recorded in binary-url.json");
+        packageInfo = release.packages.${package} or (throw "ojuny-manual: package '${package}' is not recorded in release '${tag}'");
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+        pkgs.callPackage ./nix/binary.nix {
+          name = package;
+          inherit (packageInfo) file;
+          info = {
+            inherit (binaryInfo) repo system;
+            inherit (release) tag version;
+            inherit (packageInfo) url hash;
+          };
+          postInstall = ''
+            install -Dm644 ${./share/applications/ojuny-manual.desktop} "$out/share/applications/ojuny-manual.desktop"
+            install -Dm644 ${./share/icons/hicolor/scalable/apps/ojuny-manual.svg} "$out/share/icons/hicolor/scalable/apps/ojuny-manual.svg"
+          '';
+        };
+
       mkBook =
         pkgs:
         pkgs.stdenvNoCC.mkDerivation {
@@ -101,7 +132,9 @@
         {
           default = manual;
           book = mkBook pkgs;
-        }
+        } // (if binaryInfo != null && binaryInfo.system == pkgs.stdenv.hostPlatform.system then {
+          ojuny-manual-binary = mkBinary {system = pkgs.stdenv.hostPlatform.system;};
+        } else {})
       );
 
       apps = forAllSystems (pkgs: {
@@ -114,5 +147,7 @@
       checks = forAllSystems (pkgs: {
         default = mkCheck pkgs;
       });
+
+      lib.mkBinary = mkBinary;
     };
 }
