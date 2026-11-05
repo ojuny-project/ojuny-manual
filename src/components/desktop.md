@@ -9,14 +9,14 @@
 > recorded.
 
 This chapter covers how the desktop layer turns Nix options into MangoWM and
-Dux Shell configuration, and where that control stops. It does not cover
+Dux Modular Shell configuration, and where that control stops. It does not cover
 individual options, which the repository reference lists, or the settings menu,
 which is a separate user surface.
 
 ## Claim
 
 The desktop layer is a generator, not a fork. It renders the native
-configuration of MangoWM and Dux Shell from one option tree under
+configuration of MangoWM and Dux Modular Shell from one option tree under
 `desktop.ojuny.*`, then links the generated files into the paths both programs
 already read. A desktop change is therefore a Nix change: it is reviewed,
 built, and activated like any other part of the system.
@@ -38,10 +38,10 @@ derivations. The generated Mango file is a stable link at
 The link sits beside any user-owned `config.toml` or `config.conf`, so the two
 formats do not overwrite each other.
 
-Dux Shell receives a different treatment. Its generated files, including
+Dux Modular Shell receives a different treatment. Its generated files, including
 `config.d/00-ojuny.json`, `clsettings.json`, `cheatsheets/binds.json`, and
 `plugin_settings.json`, are linked individually into `~/.config/dms`. That
-directory stays real and writable because Dux Shell creates its own files there.
+directory stays real and writable because Dux Modular Shell creates its own files there.
 `lib/mk-linker.nix` writes `ojuny-config`, which creates the links, seeds
 `session.json`, touches the first-launch marker, and clears a stale
 `DankMaterialShell` link.
@@ -49,7 +49,7 @@ directory stays real and writable because Dux Shell creates its own files there.
 On NixOS, a user `ojuny-config` oneshot with `restartTriggers` handles every
 user. On Home Manager, `xdg.configFile` places the same links and an
 `ojuny-config --seed` service runs as the user. The Mango wrapper calls
-`ojuny-config --links-only` before starting the compositor. The Dux Shell wrapper
+`ojuny-config --links-only` before starting the compositor. The Dux Modular Shell wrapper
 seeds the session file on `dms run`, supplies the runtime path, and asserts that
 `quickshell` is at least 0.3.0.
 
@@ -63,7 +63,7 @@ handling, the dankMenu tree, and the generated Ghostty configuration.
 
 ## What it does not own
 
-It does not own MangoWM or Dux Shell source, their command surfaces, or the
+It does not own MangoWM or Dux Modular Shell source, their command surfaces, or the
 runtime state the shell writes. It does not own the user's existing Ghostty
 configuration, which loads after the generated file and wins. It does not own
 hardware, the bootloader, accounts, or patch selection, and it does not manage
@@ -78,7 +78,7 @@ The supported change is an option plus a rebuild. That is the main tradeoff:
 readability and reproducibility in exchange for a slower edit cycle.
 
 Because links are placed at activation, a rebuilt configuration is not live until
-Dux Shell and MangoWM restart. The Mango watcher matches events by exact path, so
+Dux Modular Shell and MangoWM restart. The Mango watcher matches events by exact path, so
 changes to `ojuny.toml` reload the compositor, while a rebuild that repoints the
 link still needs the wrapper path to be re-read.
 
@@ -116,4 +116,4 @@ not completed, not that the option was ignored.
 - [Desktop repository](https://github.com/ojuny-project/ojuny-desktop)
 - [Troubleshooting](../troubleshooting.md)
 - [MangoWM](https://github.com/mangowm/mango)
-- [Dux Shell](https://github.com/duxlabs-dev/dux-shell)
+- [Dux Modular Shell](https://github.com/duxlabs-dev/dux-shell)

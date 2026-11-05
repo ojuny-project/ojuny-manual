@@ -19,7 +19,7 @@ changes in detail, and it does not describe package-level version selection.
 Ojuny has no automatic update of packages or flake inputs. Two scheduled jobs do
 change the store without a rebuild: `nix.gc.automatic` collects garbage and
 `nix.optimise.automatic` hard-links duplicate paths. Neither changes the running
-generation. The Dux updater settings and the repo-sync checker are both off or
+generation. The DMS updater settings and the repo-sync checker are both off or
 inert until you enable them.
 
 Packages and the template move independently. Packages and flake inputs move
@@ -77,7 +77,7 @@ clones or pulls the flake as the invoking user, then runs `nixos-rebuild` agains
 the local path. `build` runs unprivileged; `boot` and `switch` ask for a password
 in the embedded terminal.
 
-The shipped Dux updater policy starts no check, sends no notification, and
+The shipped DMS updater policy starts no check, sends no notification, and
 updates nothing; its advanced keys are on the same page. Enabling one is a
 choice, not a supported default.
 

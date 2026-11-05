@@ -30,7 +30,7 @@ with `nixfmt`, and written atomically.
 Start the settings menu from the application menu. The template also installs
 `nix-regedit`, `nix-shell-gui`, and `simple-nix-update-gui`.
 
-`ojuny settings open <page>` is different: it opens a Dux Shell settings page
+`ojuny settings open <page>` is different: it opens a Dux Modular Shell settings page
 for the running session, not the Nix settings window.
 
 On first start, choose the flake or configuration directory with the selector at

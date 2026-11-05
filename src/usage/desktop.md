@@ -19,15 +19,15 @@ MangoWM.
 
 ## The session
 
-The desktop is one Wayland session built from MangoWM and Dux Shell. MangoWM is
-the compositor; Dux Shell runs on top. An X11 session does not work.
+The desktop is one Wayland session built from MangoWM and Dux Modular Shell. MangoWM is
+the compositor; Dux Modular Shell runs on top. An X11 session does not work.
 
 The session is registered as `Ojuny Desktop` with id `ojuny`. The template
 provides a graphical greeter
 through `dux-greeter` and makes the Ojuny session the default. The login page in
 the settings menu holds the greeter, compositor, and auto-login options.
 
-Dux Shell needs `quickshell` 0.3.0 or newer. The flake supplies a matching
+Dux Modular Shell needs `quickshell` 0.3.0 or newer. The flake supplies a matching
 version and the wrapper checks it at build time.
 
 ## Surfaces
@@ -99,7 +99,7 @@ wrapper passes that path with `-c`. A user-owned `config.toml` or `config.conf`
 can sit beside it; the watcher matches exact paths, so only `ojuny.toml`
 triggers a reload.
 
-The Dux Shell tree is generated in the store and each file is symlinked into
+The Dux Modular Shell tree is generated in the store and each file is symlinked into
 `~/.config/dms`. The directory stays writable so the shell can create its own
 files. The session file is a writable copy in `~/.local/state/dms`.
 
@@ -130,16 +130,16 @@ Firefox, Ghostty, and dux-files are default. Terminal binds use
 your own file, so your values win. The `ghostty` binary is not replaced.
 
 KDE Connect is enabled as a user service, along with its GVFS and SSH agent
-prerequisites. The default Dux Shell plugins are enabled with `mkDefault`
+prerequisites. The default Dux Modular Shell plugins are enabled with `mkDefault`
 because the default bar, control center, and binds reference them. Disable one
 on the Plugins page or override its source.
 
 ## Limits
 
-The desktop is one shape: MangoWM with Dux Shell. Other desktops exist only as
+The desktop is one shape: MangoWM with Dux Modular Shell. Other desktops exist only as
 patches. The session is Wayland-only. Generated files under `~/.config` are
 symlinks into the store, so edits there disappear at the next activation.
-Restarting Dux Shell does not reload the compositor. No session has been
+Restarting Dux Modular Shell does not reload the compositor. No session has been
 recorded as tested, and disk and memory use are not measured.
 
 ## Sources

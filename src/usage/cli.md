@@ -51,7 +51,7 @@ holds the package.
 ## Requirements
 
 - Linux with Nix and flakes for installation from the flake.
-- A running Dux Shell session for the categories that control the shell, such as
+- A running Dux Modular Shell session for the categories that control the shell, such as
   window, workspace, bar, and dock.
 - NixOS for `ojuny flake activate-boot` and `ojuny flake activate-now`, which
   call `nixos-rebuild`.
@@ -92,7 +92,7 @@ patch switch and the modules it found.
 
 Most commands change the running session only. A reload or a rebuild can discard
 the change. Persistent values belong in the settings menu. These commands open
-a Dux Shell settings page, not the Nix settings window:
+a Dux Modular Shell settings page, not the Nix settings window:
 
 ```sh
 ojuny settings open bar

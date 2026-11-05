@@ -124,7 +124,7 @@ with `ojuny display list` and the monitor model.
 Cause: the palette changed in the running shell, or the generated files were
 rebuilt without restarting their readers.
 
-Fix: change `ojuny.style.palette`, rebuild, then restart Dux Shell and MangoWM.
+Fix: change `ojuny.style.palette`, rebuild, then restart Dux Modular Shell and MangoWM.
 
 Cost: a restart, because both read the configuration at startup.
 
@@ -137,7 +137,7 @@ shows the old palette. Open an issue with the generation.
 ### The update GUI does not update packages
 
 Cause: `simple-nix-update-gui` checks whether the flake repository moved; it is
-not a package updater. It and the Dux updater are off by default. Rebuild in
+not a package updater. It and the DMS updater are off by default. Rebuild in
 `nix-monitor` opens `nix-settings-gui`, which rebuilds only when its config
 contains `rebuild_command`.
 

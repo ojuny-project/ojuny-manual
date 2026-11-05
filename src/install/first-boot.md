@@ -19,7 +19,7 @@ itself, recovery from a failed boot, or the full settings reference.
 Remove the installation media before restarting. At the greeter, select the
 Ojuny session and log in with the account created by the installer or the setup
 script. The template's greeter is `dux-greeter`; the session starts MangoWM,
-then Dux Shell.
+then Dux Modular Shell.
 
 If the machine boots to a text login, the graphical session did not start.
 Check the display manager page after logging in from a TTY, or read the boot
@@ -100,7 +100,7 @@ users, account state becomes imperative and does not roll back.
 ## Change the desktop
 
 The bar, dock, launcher, dashboard, control center, and application menu are
-Dux Shell surfaces. The dock is off by default. The theme picker uses the base16
+Dux Modular Shell surfaces. The dock is off by default. The theme picker uses the base16
 schemes installed by `pkgs.base16-schemes`, and the default is Everforest Dark
 Hard. Wallpaper presets are generated from the active palette; a custom image
 overrides the preset.

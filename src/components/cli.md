@@ -17,7 +17,7 @@ settings menu, which is the persistent counterpart to most runtime commands.
 ## Claim
 
 Ojuny ships two binaries that wrap tools which already own a feature. `ojuny`
-translates a category and command into a call to MangoWM, Dux Shell, or a system
+translates a category and command into a call to MangoWM, Dux Modular Shell, or a system
 service. `ojuny-patches` manages git repositories that publish optional Nix
 modules and copies one module into a local flake. Neither binary stores desktop
 configuration.
@@ -36,7 +36,7 @@ the package wrapper. Each category is a file under
 The dispatcher resolves the category, checks that its backend exists, then
 forwards the command.
 
-The backends are named in the man page: `mmsg` for MangoWM, `dms` for Dux Shell
+The backends are named in the man page: `mmsg` for MangoWM, `dms` for Dux Modular Shell
 IPC, `nmcli`, `bluetoothctl`, `wpctl`, `playerctl`, `wg`, `systemctl`,
 `loginctl`, `nix`, and `nixos-rebuild`. A missing backend exits 3 rather than
 falling back to another tool.
@@ -78,7 +78,7 @@ Persistent values belong in the settings menu, and the two surfaces can disagree
 until the next rebuild.
 
 The wrapper is only as capable as its backends. Session commands fail or return a
-backend error when Dux Shell is not running, and power and session commands may
+backend error when Dux Modular Shell is not running, and power and session commands may
 trigger a polkit prompt. Running them from a root shell is the wrong context.
 
 Only `activate-boot` and `activate-now` change the installed system, and they
