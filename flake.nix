@@ -4,7 +4,7 @@
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   outputs =
-    { nixpkgs, ... }:
+    { self, nixpkgs, ... }:
     let
       systems = [
         "x86_64-linux"
@@ -158,11 +158,54 @@
           type = "app";
           program = "${(mkManual pkgs)}/bin/ojuny-manual";
         };
+        ci = {
+          type = "app";
+          program = "${
+            pkgs.writeShellApplication {
+              name = "ci";
+              runtimeInputs = [ pkgs.nix ];
+              text = ''
+                exec nix flake check "$@"
+              '';
+            }
+          }/bin/ci";
+        };
       });
 
       checks = forAllSystems (pkgs: {
         default = mkCheck pkgs;
+
+        manual-summary =
+          let
+            source = pkgs.lib.cleanSource ./.;
+          in
+          pkgs.runCommand "check-manual-summary" {
+            nativeBuildInputs = [ pkgs.python3 ];
+          } ''
+            python3 - ${source} <<'PY'
+import os
+import re
+import sys
+
+root = sys.argv[1]
+summary = os.path.join(root, "src/SUMMARY.md")
+if not os.path.exists(summary):
+    raise SystemExit("missing src/SUMMARY.md")
+text = open(summary, encoding="utf-8").read()
+missing = [
+    link
+    for link in re.findall(r"\]\(([^)]+\.md)\)", text)
+    if not os.path.exists(os.path.join(root, "src", link))
+]
+if missing:
+    print("\n".join(missing))
+    raise SystemExit(1)
+PY
+            touch $out
+          '';
       });
+
+      hydraJobs = self.checks;
 
       lib.mkBinary = mkBinary;
     };
