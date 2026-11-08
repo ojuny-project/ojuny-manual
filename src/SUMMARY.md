@@ -16,6 +16,7 @@
 - [Updates and rollback](usage/updates.md)
 - [Patches](usage/patches.md)
 - [Command line](usage/cli.md)
+- [Multiboot](usage/multiboot.md)
 
 # Troubleshooting
 

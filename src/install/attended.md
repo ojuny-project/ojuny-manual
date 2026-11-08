@@ -76,12 +76,20 @@ keep the installed configuration local, or enter an HTTPS or SSH remote. An
 HTTPS remote with a token writes `~/.git-credentials` with mode `0600`. The
 initial commit is authored as `Ojuny Installer <installer@ojuny.local>`.
 
-The partition page erases a disk and creates the layout. EFI uses a `/boot`
+The partition page can use the whole disk or install alongside existing systems.
+The whole-disk option erases the selected disk. Alongside mode can shrink XFS,
+EXT4, BTRFS, f2fs and vfat partitions automatically. EFI uses a `/boot`
 partition with a recommended size of 1 GiB. The default root filesystem is
 ext4; btrfs, xfs, and f2fs are available. LUKS2 encryption is optional and
-covers the root partition. Swap can be none, small, or suspend-sized. The
-summary page is read-only and repeats the account, hostname, bootloader, disk,
-template, and repository.
+covers the root partition. Swap can be none, small, or suspend-sized.
+
+If Windows is installed, shrink its partition in Windows Disk Management before
+starting the installer, and export the BitLocker recovery key first when
+BitLocker is enabled. Ojuny does not resize NTFS. The partition page shows this
+warning before the disk layout is chosen.
+
+The summary page is read-only and repeats the account, hostname, bootloader,
+disk, template, and repository.
 
 Installation runs `nixos-install --flake` against the copied template. It writes
 `modules/07-system/00-hardware.nix`, `modules/01-users/01-user.nix`, and
