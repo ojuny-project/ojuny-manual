@@ -31,7 +31,9 @@ The boot order service asserts only this invariant: `Linux Boot Manager` and
 `Ojuny Recovery`, in that order, are the top two internal entries. External
 entries keep their exact positions and the service does nothing when the order
 is already correct, so a plugged-in USB drive is not forced above or below
-Ojuny.
+Ojuny. The installer applies the same placement once after `nixos-install`,
+restoring the order it captured before the install, so the one-time move to the
+top done by `bootctl install` is undone.
 
 If Windows resets the order, boot Ojuny once from the firmware menu and the
 service restores it.
