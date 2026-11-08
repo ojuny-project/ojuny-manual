@@ -17,6 +17,7 @@
 - [Patches](usage/patches.md)
 - [Command line](usage/cli.md)
 - [Multiboot](usage/multiboot.md)
+- [Recovery](usage/recovery.md)
 
 # Troubleshooting
 

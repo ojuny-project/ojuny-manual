@@ -88,6 +88,12 @@ starting the installer, and export the BitLocker recovery key first when
 BitLocker is enabled. Ojuny does not resize NTFS. The partition page shows this
 warning before the disk layout is chosen.
 
+Install Windows first. Windows recreates the EFI system partition when it
+installs, so a Linux bootloader installed before Windows is removed. Do not
+resize the 200 MiB Windows ESP. The installer creates a 1 GiB ojuny ESP in the
+free space and leaves the Windows ESP unassigned. systemd-boot, rEFInd, the
+kernels, the initrds and the recovery UKI live on the ojuny ESP.
+
 The summary page is read-only and repeats the account, hostname, bootloader,
 disk, template, and repository.
 
