@@ -3,7 +3,8 @@
 <!-- unreleased-marker -->
 > **Unreleased.** Ojuny is not released. This chapter is unreviewed, may contain placeholders, and is subject to change without notice.
 
-The Recovery page has one switch, **Enable recovery UKI**. It is on by default.
+The Secure Boot page has the **Enable recovery UKI** switch, under Boot entries.
+It is on by default.
 
 When it is on, Ojuny builds a signed Unified Kernel Image from the current
 generation and installs it to the ojuny ESP. A firmware entry named

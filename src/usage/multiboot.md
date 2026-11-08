@@ -17,7 +17,7 @@ systemd-boot only reads its own ESP and XBOOTLDR partition. Windows on the same
 ESP is detected natively. Any other system on another ESP or another internal
 disk needs the helper.
 
-Enable it on the Multiboot page in the settings menu. Turning it off again
+Enable it on the Secure Boot page in the settings menu. Turning it off again
 removes the rEFInd directory and the "Other systems" entry at the next boot.
 
 ## Installing alongside Windows
