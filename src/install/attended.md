@@ -79,7 +79,7 @@ initial commit is authored as `Ojuny Installer <installer@ojuny.local>`.
 The partition page can use the whole disk or install alongside existing systems.
 The whole-disk option erases the selected disk. Alongside mode can shrink XFS,
 EXT4, BTRFS, f2fs and vfat partitions automatically. EFI uses a `/boot`
-partition with a recommended size of 1 GiB. The default root filesystem is
+partition with a recommended size of 4 GiB. The default root filesystem is
 ext4; btrfs, xfs, and f2fs are available. LUKS2 encryption is optional and
 covers the root partition. Swap can be none, small, or suspend-sized.
 
@@ -90,9 +90,9 @@ warning before the disk layout is chosen.
 
 Install Windows first. Windows recreates the EFI system partition when it
 installs, so a Linux bootloader installed before Windows is removed. Do not
-resize the 200 MiB Windows ESP. The installer creates a 1 GiB ojuny ESP in the
-free space and leaves the Windows ESP unassigned. systemd-boot, rEFInd, the
-kernels, the initrds and the recovery UKI live on the ojuny ESP.
+resize the 200 MiB Windows ESP. The installer creates a 4 GiB ojuny ESP in the
+replaced partition and leaves the Windows ESP unassigned. systemd-boot, rEFInd,
+the kernels, the initrds and the recovery UKI live on the ojuny ESP.
 
 The summary page is read-only and repeats the account, hostname, bootloader,
 disk, template, and repository.

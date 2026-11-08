@@ -33,7 +33,7 @@ unattended paths erase the disk and are not dual-boot paths.
 
 Install Windows first. Windows recreates the ESP when it installs and removes a
 Linux bootloader installed before it. Do not resize the 200 MiB Windows ESP.
-The installer creates a 1 GiB ojuny ESP in the free space and leaves the
+The installer creates a 4 GiB ojuny ESP in the replaced partition and leaves the
 Windows ESP unassigned. systemd-boot, rEFInd, the kernels, the initrds and the
 recovery UKI live on the ojuny ESP.
 
