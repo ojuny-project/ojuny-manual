@@ -1,7 +1,7 @@
 {
   "repo": "ojuny-project/ojuny-manual",
   "system": "x86_64-linux",
-  "latest": "v0.1.0-hotfix-1",
+  "latest": "v0.1.1",
   "releases": {
     "v0.1.0-hotfix-1": {
       "tag": "v0.1.0-hotfix-1",
@@ -11,6 +11,17 @@
           "file": "ojuny-manual-x86_64",
           "url": "https://github.com/ojuny-project/ojuny-manual/releases/download/v0.1.0-hotfix-1/ojuny-manual-x86_64",
           "hash": "sha256-prUji5f4TXbbLHQPK8osrpwV4u95V2/GYEEbP1HRDAY="
+        }
+      }
+    },
+    "v0.1.1": {
+      "tag": "v0.1.1",
+      "version": "0.1.1",
+      "packages": {
+        "ojuny-manual": {
+          "file": "ojuny-manual-x86_64",
+          "url": "https://github.com/ojuny-project/ojuny-manual/releases/download/v0.1.1/ojuny-manual-x86_64",
+          "hash": "sha256-53FKZITW1WIPRZmkbvNgX3pmkFFnXhZVZvFKptaT9Hs="
         }
       }
     }
