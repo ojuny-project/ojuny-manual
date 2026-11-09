@@ -10,3 +10,4 @@ result-*
 
 # Ignore the mdBook output directory
 book/
+changes.log
