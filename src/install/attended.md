@@ -81,7 +81,8 @@ The whole-disk option erases the selected disk. Alongside mode can shrink XFS,
 EXT4, BTRFS, f2fs and vfat partitions automatically. EFI uses a `/boot`
 partition with a recommended size of 4 GiB. The default root filesystem is
 ext4; btrfs, xfs, and f2fs are available. LUKS2 encryption is optional and
-covers the root partition. Swap can be none, small, or suspend-sized.
+covers the root partition. Every install mode offers the same swap choice: none,
+swap without hibernate, or swap with hibernate.
 
 If Windows is installed, shrink its partition in Windows Disk Management before
 starting the installer, and export the BitLocker recovery key first when

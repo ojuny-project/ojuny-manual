@@ -28,7 +28,8 @@ key first when BitLocker is enabled. A forced Linux-side NTFS shrink can leave
 Windows unbootable.
 
 The attended installer can shrink XFS, EXT4, BTRFS, f2fs and vfat partitions
-and install into the freed space. It does not resize NTFS. The whole-disk and
+and install into the freed space. Alongside installs offer the same swap choice
+as the other install modes. It does not resize NTFS. The whole-disk and
 unattended paths erase the disk and are not dual-boot paths.
 
 Install Windows first. Windows recreates the ESP when it installs and removes a
