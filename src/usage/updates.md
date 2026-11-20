@@ -10,13 +10,14 @@
 
 ## What this covers
 
-How to update flake inputs, rebuild the system, use the update checker, and
-return to an earlier generation. It does not cover merging upstream template
-changes in detail, and it does not describe package-level version selection.
+How to update flake inputs by hand or with the optional workflow, rebuild the
+system, use the update checker, and return to an earlier generation. It does
+not cover merging upstream template changes in detail, and it does not describe
+package-level version selection.
 
 ## Update on purpose
 
-Ojuny has no automatic update of packages or flake inputs. Two scheduled jobs do
+Ojuny does not update a running system automatically. Two scheduled jobs do
 change the store without a rebuild: `nix.gc.automatic` collects garbage and
 `nix.optimise.automatic` hard-links duplicate paths. Neither changes the running
 generation. The DMS updater settings and the repo-sync checker are both off or
@@ -25,6 +26,28 @@ inert until you enable them.
 Packages and the template move independently. Packages and flake inputs move
 when you run a flake update. The template moves when you merge upstream into
 your fork.
+
+## Optional input update workflow
+
+Ojuny templates ship `.github/workflows/update-flake-inputs.yml`. It is off by
+default. On a fork, open the repository on GitHub, select the workflow under
+Actions, and click **Enable workflow**. That switch turns on the weekly schedule
+and the **Run workflow** button; no repository variable or local command is
+involved.
+
+The workflow runs `nix flake update`, checks the result with
+`nix flake check --no-build`, and pushes a `flake-update/<run>` branch. It opens
+a pull request when the repository allows GitHub Actions to create pull
+requests; otherwise the run summary prints the compare link. A pull request
+created by the workflow token needs one **Approve workflows to run** click
+before CI starts.
+
+The schedule runs only in a fork. The template repository skips it, so upstream
+does not update itself. Merging the pull request changes `flake.lock` only; the
+running system changes at the next rebuild. GitHub disables the schedule after
+60 days without repository activity. A fork that already ran Actions before the
+workflow existed may start the schedule on the next pull; disable the workflow
+in Actions if you do not want it.
 
 ## Update inputs and rebuild
 
@@ -154,6 +177,7 @@ tested for this chapter.
 ## Sources
 
 - [Update tool options and defaults](https://github.com/ojuny-project/ojuny-template/blob/main/modules/02-core/10-updates.nix)
+- [Input update workflow](https://github.com/ojuny-project/ojuny-template/blob/main/.github/workflows/update-flake-inputs.yml)
 - [ojuny flake commands](https://github.com/ojuny-project/ojuny-cli/blob/main/docs/user.md)
 - [simple-nix-update-gui module](https://github.com/ojuny-project/simple-nix-update-gui/blob/main/modules/nixos.nix)
 - [Site update overview](https://github.com/ojuny-project/ojuny-project.github.io/blob/main/src/content/docs/configuration/updates.md)

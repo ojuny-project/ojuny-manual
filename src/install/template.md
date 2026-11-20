@@ -11,9 +11,10 @@
 ## What this covers
 
 Fork the template, run its setup app on a NixOS machine, answer the prompts, and
-decide whether to rebuild. It does not partition a disk, install NixOS, or write
-the desktop settings for you. The setup script assumes a working NixOS system
-with a bootloader and an existing filesystem layout.
+decide whether to rebuild. It also points at the optional flake input update
+workflow in the fork. It does not partition a disk, install NixOS, or write the
+desktop settings for you. The setup script assumes a working NixOS system with a
+bootloader and an existing filesystem layout.
 
 ## Before you start
 
@@ -107,6 +108,13 @@ Expected: all three files exist, the host file contains a `nixosConfigurations`
 entry, and `git status` is clean or shows only files the script added. The
 repository does not record the output of a full run, so the exact result is
 unverified.
+
+## Optional input updates
+
+The fork includes `.github/workflows/update-flake-inputs.yml`, which updates
+every flake input on a schedule and opens a pull request. It is off by default.
+Enable the workflow under Actions in the fork; see
+[Updates and rollback](../usage/updates.md) for the full procedure and limits.
 
 ## If it fails
 
