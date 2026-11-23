@@ -84,4 +84,3 @@ Add `inputs.ojuny-manual.packages.${pkgs.system}.ojuny-manual` to
 ## License
 
 GPL-3.0. See [LICENSE](LICENSE).
-
