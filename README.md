@@ -44,10 +44,14 @@ is a terminal and no display is set. Otherwise it opens a browser.
 
 ```
 ojuny-manual --gui     # browser
+ojuny-manual --tty     # w3m even with a display
 ojuny-manual --path    # print the installed index path
 ojuny-manual --list    # chapter titles, one per line
 ojuny-manual --serve   # serve on 127.0.0.1 and print the URL
 ```
+
+`--tty` starts `w3m` from a graphical session, for example in a terminal
+window.
 
 ## Build
 

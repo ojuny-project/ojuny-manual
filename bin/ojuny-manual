@@ -30,10 +30,11 @@ die() {
 
 usage() {
   cat <<'EOF'
-usage: ojuny-manual [--gui | --path | --list | --serve]
+usage: ojuny-manual [--gui | --tty | --path | --list | --serve]
 
   (no option)  open the book in w3m, or in a browser with a display
   --gui        open the book in a browser
+  --tty        open the book in w3m even when a display is set
   --path       print the path to the installed index page
   --list       print the chapter titles, one per line
   --serve      serve the book on 127.0.0.1 and print the URL
@@ -92,6 +93,7 @@ case "${1:-}" in
     fi
     ;;
   --gui) open_gui ;;
+  --tty) open_tty ;;
   --path) printf '%s\n' "$index" ;;
   --list) list_chapters ;;
   --serve) serve ;;

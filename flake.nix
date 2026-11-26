@@ -129,6 +129,18 @@
           test -f ${manual}/share/applications/ojuny-manual.desktop
           grep -qx 'Exec=ojuny-manual --gui' ${manual}/share/applications/ojuny-manual.desktop
           grep -qx 'Terminal=false' ${manual}/share/applications/ojuny-manual.desktop
+          grep -qx 'Actions=Terminal;' ${manual}/share/applications/ojuny-manual.desktop
+          grep -qx 'Exec=ojuny-manual --tty' ${manual}/share/applications/ojuny-manual.desktop
+
+          mkdir -p fakebin
+          cat > fakebin/w3m <<'EOF'
+          #!/bin/sh
+          printf '%s\n' "$1" > tty-arg
+          EOF
+          chmod +x fakebin/w3m
+          OJUNY_MANUAL_HOME=${manual}/share/ojuny-manual DISPLAY=:0 PATH="$PWD/fakebin:$PATH" \
+            ${pkgs.dash}/bin/dash ${./bin/ojuny-manual} --tty
+          test "$(cat tty-arg)" = "${manual}/share/ojuny-manual/book/index.html"
 
           touch $out
         '';
@@ -179,30 +191,32 @@
           let
             source = pkgs.lib.cleanSource ./.;
           in
-          pkgs.runCommand "check-manual-summary" {
-            nativeBuildInputs = [ pkgs.python3 ];
-          } ''
-            python3 - ${source} <<'PY'
-import os
-import re
-import sys
+          pkgs.runCommand "check-manual-summary"
+            {
+              nativeBuildInputs = [ pkgs.python3 ];
+            }
+            ''
+                          python3 - ${source} <<'PY'
+              import os
+              import re
+              import sys
 
-root = sys.argv[1]
-summary = os.path.join(root, "src/SUMMARY.md")
-if not os.path.exists(summary):
-    raise SystemExit("missing src/SUMMARY.md")
-text = open(summary, encoding="utf-8").read()
-missing = [
-    link
-    for link in re.findall(r"\]\(([^)]+\.md)\)", text)
-    if not os.path.exists(os.path.join(root, "src", link))
-]
-if missing:
-    print("\n".join(missing))
-    raise SystemExit(1)
-PY
-            touch $out
-          '';
+              root = sys.argv[1]
+              summary = os.path.join(root, "src/SUMMARY.md")
+              if not os.path.exists(summary):
+                  raise SystemExit("missing src/SUMMARY.md")
+              text = open(summary, encoding="utf-8").read()
+              missing = [
+                  link
+                  for link in re.findall(r"\]\(([^)]+\.md)\)", text)
+                  if not os.path.exists(os.path.join(root, "src", link))
+              ]
+              if missing:
+                  print("\n".join(missing))
+                  raise SystemExit(1)
+              PY
+                          touch $out
+            '';
       });
 
       hydraJobs = self.checks;

@@ -5,5 +5,11 @@ Comment=Read the Ojuny user manual offline
 Exec=ojuny-manual --gui
 Icon=ojuny-manual
 Terminal=false
+Actions=Terminal;
 Categories=Documentation;
 Keywords=ojuny;manual;documentation;
+
+[Desktop Action Terminal]
+Name=Ojuny Manual in Terminal
+Exec=ojuny-manual --tty
+Terminal=true

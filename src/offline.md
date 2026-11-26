@@ -44,6 +44,12 @@ With no argument the launcher checks the session. If stdout is a terminal and
 neither `DISPLAY` nor `WAYLAND_DISPLAY` is set, it opens the index in the
 bundled `w3m`. Otherwise it behaves like `--gui`.
 
+Use `--tty` to force `w3m` from a graphical session:
+
+```sh
+ojuny-manual --tty
+```
+
 `w3m` navigation: arrow keys scroll, `Tab` moves to the next link, `Enter`
 follows it, `q` quits.
 
