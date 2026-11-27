@@ -142,6 +142,11 @@
             ${pkgs.dash}/bin/dash ${./bin/ojuny-manual} --tty
           test "$(cat tty-arg)" = "${manual}/share/ojuny-manual/book/index.html"
 
+          grep -qF 'w3m uses its own keys' ${./src/offline.md}
+          grep -qF 'The w3m reader uses w3m' ${./src/offline.md}
+          grep -qF 'These are desktop session binds.' ${./src/usage/desktop.md}
+          grep -qF 'The theme picker is a desktop session control.' ${./src/install/first-boot.md}
+
           touch $out
         '';
     in

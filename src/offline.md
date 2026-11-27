@@ -53,6 +53,13 @@ ojuny-manual --tty
 `w3m` navigation: arrow keys scroll, `Tab` moves to the next link, `Enter`
 follows it, `q` quits.
 
+The reader shows the book text only. The theme selector and the keyboard
+shortcut help are browser controls from the HTML build and do nothing in w3m.
+w3m uses its own keys: `?` or `H` opens help, `B` goes back, `U` opens a URL,
+`/` searches the page, `Tab` moves to the next link, `Enter` follows it, and
+`q` quits. Theme and keybind sections in the book describe the Ojuny desktop
+session, not the reader.
+
 ## From the desktop
 
 ```sh
@@ -89,5 +96,7 @@ The book alone is built with `mdbook build` and lands in `book/`.
 The package and the launcher have not been built or run, so every command above
 is untested. The offline book covers this manual only. Repository links and the
 site need network access. The bundled `w3m` renders text and tables but not
-JavaScript, so interactive elements do not work. `--serve` binds only to
-`127.0.0.1` and runs in the foreground.
+JavaScript, so interactive elements do not work. Theme selection and keybinds
+in the book describe the desktop session. The w3m reader uses w3m's colors and
+keys; the manual does not set either. `--serve` binds only to `127.0.0.1` and
+runs in the foreground.

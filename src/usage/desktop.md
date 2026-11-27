@@ -72,6 +72,9 @@ contrast, and the monitor widget arranges outputs graphically.
 
 ## Keybinds
 
+These are desktop session binds. The terminal reader has its own keys, listed
+in [Reading offline](../offline.md).
+
 `SUPER+K` opens the searchable keybind menu. It is the one bind worth
 memorizing. The menu is grouped by the `group` field on each bind.
 

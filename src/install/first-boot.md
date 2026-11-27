@@ -105,6 +105,9 @@ schemes installed by `pkgs.base16-schemes`, and the default is Everforest Dark
 Hard. Wallpaper presets are generated from the active palette; a custom image
 overrides the preset.
 
+The theme picker is a desktop session control. It is not available in the
+terminal reader.
+
 Wallpaper cycling and other session state live in `~/.local/state/dms`, which
 stays writable. Generated configuration files are symlinks into the Nix store,
 so do not edit them in place.
