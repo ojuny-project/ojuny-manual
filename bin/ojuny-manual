@@ -78,8 +78,8 @@ open_tty() {
   fi
   choice=$(
     summary_rows |
-      fzf --delimiter='\t' --with-nth=2 \
-        --preview="bat --style=plain --color=always --paging=never \"$md_dir/{1}\""
+      fzf --delimiter='\t' --with-nth=2 --layout=reverse \
+        --preview="bat --style=plain --color=always --paging=never $md_dir/{1}"
   ) || exit 0
   [ -n "$choice" ] || exit 0
   tab=$(printf '\t')
