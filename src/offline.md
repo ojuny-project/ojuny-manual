@@ -4,13 +4,14 @@
 > **Unreleased.** Ojuny is not released. This chapter is unreviewed, may contain placeholders, and is subject to change without notice.
 
 
-> Status: untested. Applies to commit `83536b7`, 2026-11-03. The package builds
-> and its checks pass; the TTY reader and desktop entry have not been run in a
-> session.
+> Status: untested in a live session. Applies to 2026-11-28. The package builds,
+> its checks pass, and the TTY reader is covered with stub `fzf` and `bat`
+> binaries.
 
-The manual installs as a Nix package that contains the built book, a launcher,
-a desktop entry, an icon, and a bundled `w3m`. It needs no Ojuny desktop, no
-`ojuny` command, no D-Bus session, and no network.
+The manual installs as a Nix package that contains the built HTML book, the
+Markdown tree, a launcher, a desktop entry, an icon, and an `fzf` + `bat` TTY
+reader. It needs no Ojuny desktop, no `ojuny` command, no D-Bus session, and no
+network.
 
 ## Install
 
@@ -31,8 +32,8 @@ ojuny-manual --path
 ojuny-manual --list
 ```
 
-`--path` prints the installed index page and `--list` prints the chapter titles.
-Neither command opens a reader.
+`--path` prints the installed Markdown directory and `--list` prints the chapter
+titles. Neither command opens a reader.
 
 ## In a terminal
 
@@ -41,24 +42,24 @@ ojuny-manual
 ```
 
 With no argument the launcher checks the session. If stdout is a terminal and
-neither `DISPLAY` nor `WAYLAND_DISPLAY` is set, it opens the index in the
-bundled `w3m`. Otherwise it behaves like `--gui`.
+neither `DISPLAY` nor `WAYLAND_DISPLAY` is set, it opens the `fzf` chapter
+picker. Otherwise it behaves like `--gui`.
 
-Use `--tty` to force `w3m` from a graphical session:
+Use `--tty` to force the chapter picker from a graphical session:
 
 ```sh
 ojuny-manual --tty
 ```
 
-`w3m` navigation: arrow keys scroll, `Tab` moves to the next link, `Enter`
-follows it, `q` quits.
+The picker lists every chapter and shows a `bat` preview on the right. Type to
+filter, use the arrow keys to move, and press `Enter` to open a chapter. `Esc`
+quits.
 
-The reader shows the book text only. The theme selector and the keyboard
-shortcut help are browser controls from the HTML build and do nothing in w3m.
-w3m uses its own keys: `?` or `H` opens help, `B` goes back, `U` opens a URL,
-`/` searches the page, `Tab` moves to the next link, `Enter` follows it, and
-`q` quits. Theme and keybind sections in the book describe the Ojuny desktop
-session, not the reader.
+The chapter opens through a `fzf` pager. Scroll with the arrow keys, the mouse,
+or `Page Up` and `Page Down`; `/` searches the page; `Esc` or `Enter` exits.
+
+The reader shows the Markdown text only. Theme and keybind sections in the book
+describe the Ojuny desktop session, not the reader.
 
 ## From the desktop
 
@@ -66,13 +67,13 @@ session, not the reader.
 ojuny-manual --gui
 ```
 
-The desktop menu entry runs the same command. It opens the index through
+The desktop menu entry runs the same command. It opens the HTML index through
 `xdg-open`, then `$BROWSER`, and prints the index path if neither works.
 
 ## When nothing opens
 
 ```sh
-ojuny-manual --path    # the installed index.html
+ojuny-manual --path    # the installed Markdown directory
 ojuny-manual --list    # chapter titles, one per line
 ojuny-manual --serve   # http://127.0.0.1:<port>/ in the foreground
 ```
@@ -93,10 +94,10 @@ The book alone is built with `mdbook build` and lands in `book/`.
 
 ## Limits
 
-The package and the launcher have not been built or run, so every command above
-is untested. The offline book covers this manual only. Repository links and the
-site need network access. The bundled `w3m` renders text and tables but not
-JavaScript, so interactive elements do not work. Theme selection and keybinds
-in the book describe the desktop session. The w3m reader uses w3m's colors and
+The package and the launcher pass their checks, but the TTY reader has not been
+run in a live terminal. The offline book covers this manual only. Repository
+links and the site need network access. The HTML book does not run JavaScript,
+so interactive elements do not work. Theme selection and keybinds in the book
+describe the desktop session. The TTY reader uses `fzf` and `bat` colors and
 keys; the manual does not set either. `--serve` binds only to `127.0.0.1` and
 runs in the foreground.

@@ -5,12 +5,14 @@ settings, updates, the command line, troubleshooting, and one walkthrough per
 component. The tree holds 15 chapters plus the index and navigation.
 
 One Markdown source tree feeds three outputs: GitHub renders the pages, mdBook
-builds a static site, and the same build ships as an offline Nix package with a
-launcher, a desktop entry, an icon, and a bundled `w3m`.
+builds a static site, and the same build ships as an offline Nix package with
+the Markdown tree, a launcher, a desktop entry, an icon, and an `fzf` + `bat`
+TTY reader.
 
-**Build and package status: verified on x86_64-linux, 2026-11-03.** `nix build`,
-`nix flake check`, `--list`, and `--path` pass. The TTY reader and the desktop
-entry have not been exercised in a real session.
+**Build and package status: verified on x86_64-linux, 2026-11-28.** `nix build`,
+`nix flake check`, `--list`, and `--path` pass. The TTY reader is covered by the
+package check with stub `fzf` and `bat` binaries; it has not been exercised in a
+live terminal session.
 
 ## Read online
 
@@ -39,19 +41,20 @@ desktop, no `ojuny` command, no portal, no D-Bus, and no network.
 ojuny-manual
 ```
 
-With no argument the launcher opens the index in the bundled `w3m` when stdout
-is a terminal and no display is set. Otherwise it opens a browser.
+With no argument the launcher opens the chapter picker when stdout is a terminal
+and no display is set. Otherwise it opens a browser.
 
 ```
 ojuny-manual --gui     # browser
-ojuny-manual --tty     # w3m even with a display
-ojuny-manual --path    # print the installed index path
+ojuny-manual --tty     # chapter picker even with a display
+ojuny-manual --path    # print the installed Markdown directory
 ojuny-manual --list    # chapter titles, one per line
 ojuny-manual --serve   # serve on 127.0.0.1 and print the URL
 ```
 
-`--tty` starts `w3m` from a graphical session, for example in a terminal
-window.
+The TTY reader uses `fzf` to pick a chapter and `bat` for the preview. Enter
+opens the chapter through a `fzf` pager: type to filter, arrows or the mouse
+scroll, `/` searches, and `Esc` or `Enter` exits.
 
 ## Build
 

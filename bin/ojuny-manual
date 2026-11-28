@@ -15,11 +15,12 @@ fi
 
 book=$home/book
 index=$book/index.html
-if [ -f "$home/SUMMARY.md" ]; then
-  summary=$home/SUMMARY.md
+if [ -d "$home/md" ]; then
+  md_dir=$home/md
 else
-  summary=$home/src/SUMMARY.md
+  md_dir=$home/src
 fi
+summary=$md_dir/SUMMARY.md
 
 die() {
   printf 'ojuny-manual: %s\n' "$1" >&2
@@ -32,10 +33,10 @@ usage() {
   cat <<'EOF'
 usage: ojuny-manual [--gui | --tty | --path | --list | --serve]
 
-  (no option)  open the book in w3m, or in a browser with a display
+  (no option)  open the book in a browser with a display, otherwise in the terminal
   --gui        open the book in a browser
-  --tty        open the book in w3m even when a display is set
-  --path       print the path to the installed index page
+  --tty        read the book in the terminal even when a display is set
+  --path       print the path to the installed Markdown directory
   --list       print the chapter titles, one per line
   --serve      serve the book on 127.0.0.1 and print the URL
 EOF
@@ -52,23 +53,47 @@ open_gui() {
   printf '%s\n' "$index"
 }
 
+summary_rows() {
+  while IFS= read -r line; do
+    case $line in
+      *']('*)
+        path=${line#*](}
+        path=${path%%)*}
+        title=${line#*[}
+        title=${title%%]*}
+        case $path in
+          *.md) printf '%s\t%s\n' "$path" "$title" ;;
+        esac
+        ;;
+    esac
+  done <"$summary"
+}
+
 open_tty() {
-  if command -v w3m >/dev/null 2>&1; then
-    exec w3m "$index"
+  [ -f "$summary" ] || die "chapter list not found at $summary"
+  if ! command -v fzf >/dev/null 2>&1 || ! command -v bat >/dev/null 2>&1; then
+    printf 'ojuny-manual: the TTY reader needs both fzf and bat.\n' >&2
+    list_chapters
+    exit 1
   fi
-  printf '%s\n' "$index"
+  choice=$(
+    summary_rows |
+      fzf --delimiter='\t' --with-nth=2 \
+        --preview="bat --style=plain --color=always --paging=never \"$md_dir/{1}\""
+  ) || exit 0
+  [ -n "$choice" ] || exit 0
+  tab=$(printf '\t')
+  path=${choice%%"$tab"*}
+  bat --style=plain --color=always "$md_dir/$path" |
+    fzf --layout=reverse --bind='esc:abort,enter:abort' --no-input --ansi --disabled --preview-window=hidden --prompt=''
 }
 
 list_chapters() {
   [ -f "$summary" ] || die "chapter list not found at $summary"
-  while IFS= read -r line; do
-    case "$line" in
-      '- ['* | '* ['*)
-        title=${line#*[}
-        printf '%s\n' "${title%%]*}"
-        ;;
-    esac
-  done <"$summary"
+  tab=$(printf '\t')
+  summary_rows | while IFS= read -r row; do
+    printf '%s\n' "${row#*"$tab"}"
+  done
 }
 
 serve() {
@@ -94,7 +119,7 @@ case "${1:-}" in
     ;;
   --gui) open_gui ;;
   --tty) open_tty ;;
-  --path) printf '%s\n' "$index" ;;
+  --path) printf '%s\n' "$md_dir" ;;
   --list) list_chapters ;;
   --serve) serve ;;
   -h | --help) usage ;;

@@ -93,6 +93,7 @@
             mkdir -p $out/share/icons/hicolor/scalable/apps
 
             cp -r ${book}/share/ojuny-manual/book $out/share/ojuny-manual/book
+            cp -r ${./src} $out/share/ojuny-manual/md
             install -Dm644 ${./src/SUMMARY.md} $out/share/ojuny-manual/SUMMARY.md
 
             install -Dm755 ${./bin/ojuny-manual} $out/bin/ojuny-manual
@@ -103,7 +104,8 @@
               --set OJUNY_MANUAL_HOME $out/share/ojuny-manual \
               --prefix PATH : ${
                 lib.makeBinPath [
-                  pkgs.w3m
+                  pkgs.bat
+                  pkgs.fzf
                   pkgs.python3
                   pkgs.xdg-utils
                 ]
@@ -119,12 +121,15 @@
         in
         pkgs.runCommand "ojuny-manual-check" { } ''
           test -f ${manual}/share/ojuny-manual/book/index.html
+          test -f ${manual}/share/ojuny-manual/md/SUMMARY.md
+          test -f ${manual}/share/ojuny-manual/md/offline.md
 
           ${pkgs.dash}/bin/dash -n ${./bin/ojuny-manual}
 
           ${manual}/bin/ojuny-manual --path
-          test "$(${manual}/bin/ojuny-manual --path)" = "${manual}/share/ojuny-manual/book/index.html"
-          ${manual}/bin/ojuny-manual --list | grep -qx 'Reading offline'
+          test "$(${manual}/bin/ojuny-manual --path)" = "${manual}/share/ojuny-manual/md"
+          ${manual}/bin/ojuny-manual --list | grep -xF 'Ojuny Manual' >/dev/null
+          ${manual}/bin/ojuny-manual --list | grep -xF 'Reading offline' >/dev/null
 
           test -f ${manual}/share/applications/ojuny-manual.desktop
           grep -qx 'Exec=ojuny-manual --gui' ${manual}/share/applications/ojuny-manual.desktop
@@ -133,17 +138,30 @@
           grep -qx 'Exec=ojuny-manual --tty' ${manual}/share/applications/ojuny-manual.desktop
 
           mkdir -p fakebin
-          cat > fakebin/w3m <<'EOF'
+          cat > fakebin/fzf <<'EOF'
           #!/bin/sh
-          printf '%s\n' "$1" > tty-arg
+          cat >/dev/null
+          printf '%s\n' "$@" >> fzf-args
+          printf 'offline.md\tReading offline\n'
           EOF
-          chmod +x fakebin/w3m
+          chmod +x fakebin/fzf
+          cat > fakebin/bat <<'EOF'
+          #!/bin/sh
+          for arg in "$@"; do
+            case $arg in
+              *.md) printf '%s\n' "$arg" > bat-arg ;;
+            esac
+          done
+          EOF
+          chmod +x fakebin/bat
           OJUNY_MANUAL_HOME=${manual}/share/ojuny-manual DISPLAY=:0 PATH="$PWD/fakebin:$PATH" \
             ${pkgs.dash}/bin/dash ${./bin/ojuny-manual} --tty
-          test "$(cat tty-arg)" = "${manual}/share/ojuny-manual/book/index.html"
+          grep -qxF -- '--with-nth=2' fzf-args
+          grep -qxF -- '--delimiter=\t' fzf-args
+          grep -qF -- '--preview=bat --style=plain --color=always --paging=never' fzf-args
+          grep -qF -- '--no-input' fzf-args
+          test "$(cat bat-arg)" = "${manual}/share/ojuny-manual/md/offline.md"
 
-          grep -qF 'w3m uses its own keys' ${./src/offline.md}
-          grep -qF 'The w3m reader uses w3m' ${./src/offline.md}
           grep -qF 'These are desktop session binds.' ${./src/usage/desktop.md}
           grep -qF 'The theme picker is a desktop session control.' ${./src/install/first-boot.md}
 
